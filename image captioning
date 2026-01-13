@@ -1,0 +1,13 @@
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from PIL import Image
+import requests
+from IPython.display import display
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+image_url = "https://images.unsplash.com/photo-1518791841217-8f162f1e1131"
+image = Image.open(requests.get(image_url, stream=True).raw)
+display(image)
+inputs = processor(image, return_tensors="pt")
+out = model.generate(**inputs)
+caption = processor.decode(out[0], skip_special_tokens=True)
+print("Generated Caption:", caption)
